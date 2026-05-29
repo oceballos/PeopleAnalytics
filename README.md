@@ -143,12 +143,5 @@ Variables a utilizar:
 
 ---
 
-## 7. Decisiones de Diseño
-
-- **Paleta:** Fondo blanco humo (`#FAFAFA`), texto negro/carbón (`#1A1A1A`), grises secundarios, énfasis en **rojo** (`#C0392B` / `#E74C3C`).
-- **Tipografía:** Sin-serif, jerarquía clara con tamaños 34/20/12/9 pt según nivel.
-- **Layout:** Estructura de dos columnas en slides de contenido; tarjetas blancas con sombra suave sobre fondo gris claro.
-
----
 
 *Documento generado automáticamente como resumen del proceso de trabajo. Todos los datos y supuestos del caso de negocio son simulados y no representan la realidad de ninguna empresa en particular.*
