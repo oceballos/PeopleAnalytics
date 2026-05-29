@@ -2,6 +2,7 @@ import kagglehub
 import pandas as pd
 import numpy as np
 import os
+from scipy.stats import beta
 
 def main():
     # 1. Download the dataset
@@ -52,10 +53,49 @@ def main():
 
     # 3. Simulate PCI training result (resultado_capacitacion_pci)
     print("Simulating PCI training results...")
-    df['resultado_capacitacion_pci'] = np.random.randint(50, 101, size=len(df))
+    
+    # Seleccionar features para la regresión (excluyendo IDs)
+    feature_cols = [col for col in df.columns if col not in ['Employee_ID', 'Employee_ID_Custom']]
+    
+    # Codificar variables categóricas
+    from sklearn.preprocessing import LabelEncoder
+    df_encoded = df[feature_cols].copy()
+    le = LabelEncoder()
+    for col in df_encoded.select_dtypes(include=['object']).columns:
+        df_encoded[col] = le.fit_transform(df_encoded[col].astype(str))
+    
+    # Generar coeficientes aleatorios para la regresión
+    np.random.seed(42)
+    coefficients = np.random.randn(len(feature_cols))
+    
+    # Calcular predicción base
+    prediction = np.dot(df_encoded.values, coefficients)
+    
+    # Normalizar y escalar a rango apropiado con media 90
+    # Para sesgo a la izquierda, usar distribución beta invertida
+    
+    # Normalizar predicciones a [0, 1]
+    prediction_normalized = (prediction - prediction.min()) / (prediction.max() - prediction.min())
+    
+    # Aplicar transformación beta para sesgo a la izquierda (alpha > beta)
+    # Con alpha=8, beta=2 obtenemos sesgo a la izquierda
+    beta_transformed = beta.ppf(prediction_normalized, a=8, b=2)
+    
+    # Escalar a rango [50, 100] con media aproximada de 90
+    df['resultado_capacitacion_pci'] = 50 + (beta_transformed * 50)
+    
+    # Ajustar para asegurar media de 90
+    current_mean = df['resultado_capacitacion_pci'].mean()
+    df['resultado_capacitacion_pci'] = df['resultado_capacitacion_pci'] + (90 - current_mean)
+    
+    # Asegurar que valores estén en rango [50, 100]
+    df['resultado_capacitacion_pci'] = df['resultado_capacitacion_pci'].clip(50, 100)
+    
+    # Redondear a enteros
+    df['resultado_capacitacion_pci'] = df['resultado_capacitacion_pci'].round().astype(int)
 
     # 4. Save to data/dataset_entrada.csv
-    output_path = os.path.join("data", "dataset_entrada.csv")
+    output_path = os.path.join("../data", "dataset_entrada.csv")
     df.to_csv(output_path, index=False)
     print(f"Dataset saved to {output_path}. Total records: {len(df)}")
     print("First 5 records:")
