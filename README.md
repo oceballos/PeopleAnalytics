@@ -144,4 +144,4 @@ Variables a utilizar:
 ---
 
 
-*Documento generado automáticamente como resumen del proceso de trabajo. Todos los datos y supuestos del caso de negocio son simulados y no representan la realidad de ninguna empresa en particular.*
+*Documento generado como resumen del proceso del trabajo. Todos los datos y supuestos del caso de negocio son simulados y no representan la realidad de ninguna empresa en particular.*
